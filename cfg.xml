@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding = "UTF-8"?>
+<settings_info>
+
+    <!--Период мониторинга сайта в секундах-->
+    <scheduler monitor_refresh_time="10"
+               browser_refresh_time = "1"/>
+
+    <!--Количество периодов обращения к сайту, при привышении которых игра считается завершённой-->
+    <monitoring max_ticks = "4"/>
+
+    <!--Название стратегии-->
+    <strategy name = "ComebackOne"/>
+
+    <ComebackOne name = "ComebackOne"
+          balance_start = "4000" balance_need = "10000000" baseBet="300"
+          minCoeff = "1.85"
+    />
+
+</settings_info>
+
+
+
+
+
+
