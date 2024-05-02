@@ -190,7 +190,7 @@ class MarathonBet:
                 sc_1 = int(match.current_map_score.split(":")[0])
                 sc_2 = int(match.current_map_score.split(":")[1])
 
-                if (isAlive and self.all_current_games.get(match.__str__()) and (sc_1 + sc_2) == 7):
+                if (isAlive and self.all_current_games.get(match.__str__()) and (sc_1 + sc_2) == 11):
                     self.strategy.resultMap(match, self.all_current_games[match.__str__()])
                     self.all_current_games.pop(match.__str__())
                     continue

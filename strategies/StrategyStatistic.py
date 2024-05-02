@@ -22,79 +22,65 @@ class StrategyStatistic:
     lose_streak_counter_max = 0
     win_streak_counter_max = 0
 
-    def __init__(self, balance, balance_need):
-        self.balance = balance
-        self.balance_need = balance_need
-        self.isFinish = False
-        self.logger = CustomLogger().getLogger(type(self).__name__)
-
-    def onPredict(self, bet):
+    @staticmethod
+    def onPredict(bet):
         #Увеличиваем сумму денег в лайве
-        self.sumLive += bet
+        StrategyStatistic.sumLive += bet
 
         #Уменьшаем баланс
-        self.balance -= bet
+        StrategyStatistic.balance -= bet
 
-
-    def onResult(self, isWin, coeff, bet):
+    @staticmethod
+    def onResult(isWin, coeff, bet):
         #Убираем сумму денег из лайва
-        self.sumLive -= bet
+        StrategyStatistic.sumLive -= bet
 
         if(isWin):
             #Фиксируем победу
-            self.win += 1
+            StrategyStatistic.win += 1
 
             #Начинаем или продолжаем серию побед
-            self.win_streak_counter += 1
+            StrategyStatistic.win_streak_counter += 1
 
             #Сбрасываем счётчик поражений
-            self.lose_streak_counter = 0
+            StrategyStatistic.lose_streak_counter = 0
 
             #Прирост баланса
-            self.balance += bet * coeff
+            StrategyStatistic.balance += bet * coeff
 
             #Прибыль с каждой ставки
-            self.margin += bet * (coeff-1)
+            StrategyStatistic.margin += bet * (coeff-1)
 
             # Фиксация самой большой выиграной ставки
-            if (bet > self.max_bet_win):
-                self.max_bet_win = bet
+            if (bet > StrategyStatistic.max_bet_win):
+                StrategyStatistic.max_bet_win = bet
 
 
         else:
             #Фиксируем покажение
-            self.lose += 1
+            StrategyStatistic.lose += 1
 
             #Начинаем или продолжаем серию побед
-            self.lose_streak_counter += 1
+            StrategyStatistic.lose_streak_counter += 1
 
             #Сбрасываем счётчик побед
-            self.win_streak_counter = 0
+            StrategyStatistic.win_streak_counter = 0
 
             #Фиксируем прибыль на данной ставке
-            self.margin -= bet
+            StrategyStatistic.margin -= bet
 
 
             # Фиксация самой большой выиграной ставки
-            if (bet > self.max_bet_lose):
-                self.max_bet_lose = bet
-
-
-        #Проверка на достижение требуемого баланса
-        if(self.balance>self.balance_need):
-            print("\n")
-            self.logger.info(f"Требуемый баланс достигнут {self.balance}")
-            self.isFinish = True
+            if (bet > StrategyStatistic.max_bet_lose):
+                StrategyStatistic.max_bet_lose = bet
 
 
         #Фиксируем окончание игры
-        self.all += 1
+        StrategyStatistic.all += 1
 
         #Пересчитываем счётчики для серии побед и поражений
-        if(self.win_streak_counter > self.win_streak_counter_max):
-            self.win_streak_counter_max = self.win_streak_counter
+        if(StrategyStatistic.win_streak_counter > StrategyStatistic.win_streak_counter_max):
+            StrategyStatistic.win_streak_counter_max = StrategyStatistic.win_streak_counter
 
-        if (self.lose_streak_counter > self.lose_streak_counter_max):
-            self.lose_streak_counter_max = self.lose_streak_counter
-
-        return self.isFinish
+        if (StrategyStatistic.lose_streak_counter > StrategyStatistic.lose_streak_counter_max):
+            StrategyStatistic.lose_streak_counter_max = StrategyStatistic.lose_streak_counter

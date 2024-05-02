@@ -1,6 +1,9 @@
 """
     Вывод информации об игре в лайве + текущей статистики алгоритма
 """
+from strategies.StrategyStatistic import StrategyStatistic
+
+
 class ConsoleViewer:
 
     @staticmethod
@@ -28,16 +31,16 @@ class ConsoleViewer:
 
 
     @staticmethod
-    def showStatistic(strategyStatistic):
-        print(f"\nОбщее число игр {strategyStatistic.all}"
-              f"\nУгаданных исходов {strategyStatistic.win}"
-              f"\nПроигранных исходов {strategyStatistic.lose}"
-              f"\nКПД стратегии {strategyStatistic.win/(strategyStatistic.win+strategyStatistic.lose)*100.0}"
-              f"\nТекущий баланс {strategyStatistic.balance}"
-              f"\nСуммарно в лайве {strategyStatistic.sumLive}"
-              f"\nСуммарно прибыль со всех ставок {strategyStatistic.margin}"
-              f"\nНаибольшая проигранная ставка {strategyStatistic.max_bet_lose}"
-              f"\nНаибольшая выигранная ставка {strategyStatistic.max_bet_win}"              
-              f"\nМаксимальная длительность серии побед {strategyStatistic.win_streak_counter_max}"
-              f"\nМаксимальная длительность серии поражений {strategyStatistic.lose_streak_counter_max}"
+    def showStatistic():
+        print(f"\nОбщее число игр {StrategyStatistic.all}"
+              f"\nУгаданных исходов {StrategyStatistic.win}"
+              f"\nПроигранных исходов {StrategyStatistic.lose}"
+              f"\nКПД стратегии {StrategyStatistic.win/(StrategyStatistic.win+StrategyStatistic.lose)*100.0}"
+              f"\nТекущий баланс {StrategyStatistic.balance}"
+              f"\nСуммарно в лайве {StrategyStatistic.sumLive}"
+              f"\nСуммарно прибыль со всех ставок {StrategyStatistic.margin}"
+              f"\nНаибольшая проигранная ставка {StrategyStatistic.max_bet_lose}"
+              f"\nНаибольшая выигранная ставка {StrategyStatistic.max_bet_win}"              
+              f"\nМаксимальная длительность серии побед {StrategyStatistic.win_streak_counter_max}"
+              f"\nМаксимальная длительность серии поражений {StrategyStatistic.lose_streak_counter_max}"
               )

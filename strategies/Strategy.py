@@ -11,7 +11,8 @@ from strategies.StrategyStatistic import StrategyStatistic
 class Strategy:
 
     def __init__(self,strategy_cfg):
-        self.strategyStatistic = StrategyStatistic(float(strategy_cfg['balance_start']), float(strategy_cfg['balance_need']))
+        StrategyStatistic.balance = float(strategy_cfg['balance_start'])
+        StrategyStatistic.balance_need = float(strategy_cfg['balance_need'])
         self.logger = CustomLogger().getLogger(type(self).__name__)
         self.matches = dict()
 
@@ -29,12 +30,9 @@ class Strategy:
 
         # Фиксируем статистику стратегии
         if("Прогноз П1" in additionalInfo):
-            self.strategyStatistic.onPredict(match.bet_1)
+            StrategyStatistic.onPredict(match.bet_1)
         else:
-            self.strategyStatistic.onPredict(match.bet_2)
-
-        # Вывод информации о статистике стратегии
-        # ConsoleViewer.showStatistic(self.strategyStatistic)
+            StrategyStatistic.onPredict(match.bet_2)
 
         return match
 
@@ -62,16 +60,16 @@ class Strategy:
                 flag = False
 
             # Подсчёт результата игры
-            additionalInfo = self.resultByStrategy(self, flag,  matchWithCoeffs.coef_1, matchWithCoeffs.bet_1)
+            additionalInfo = self.resultByStrategy(self, flag, matchWithCoeffs.coef_1, matchWithCoeffs.bet_1)
 
             # Вывод информации на консоль
             ConsoleViewer.showResult(matchWithCoeffs, flag, additionalInfo)
 
             # Фиксируем статистику стратегии
-            needBalanceDone = self.strategyStatistic.onResult(flag, matchWithCoeffs.coef_1, matchWithCoeffs.bet_1)
+            needBalanceDone = StrategyStatistic.onResult(flag, matchWithCoeffs.coef_1, matchWithCoeffs.bet_1)
 
             # Вывод информации о статистике стратегии
-            ConsoleViewer.showStatistic(self.strategyStatistic)
+            ConsoleViewer.showStatistic()
 
         # П2
         if (matchWithCoeffs.bet_2 != 0):
@@ -89,10 +87,10 @@ class Strategy:
             ConsoleViewer.showResult(matchWithCoeffs, flag, additionalInfo)
 
             # Фиксируем статистику стратегии
-            needBalanceDone = self.strategyStatistic.onResult(flag, matchWithCoeffs.coef_2, matchWithCoeffs.bet_2)
+            needBalanceDone = StrategyStatistic.onResult(flag, matchWithCoeffs.coef_2, matchWithCoeffs.bet_2)
 
             # Вывод информации о статистике стратегии
-            ConsoleViewer.showStatistic(self.strategyStatistic)
+            ConsoleViewer.showStatistic()
 
 
     @abstractmethod
