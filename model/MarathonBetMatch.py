@@ -15,10 +15,10 @@ class MarathonBetMatch(Match):
     def __init__(self, info, team_1, team_2, uri, logger, strategy):
         super().__init__(info, team_1, team_2, uri, logger, strategy)
 
-    def parseDataFromSite(self):
+    def parseDataFromSite(self, soup):
         #current map
         try:
-            self.map = stream(self.soup.find_all(class_='name-field')).filter(
+            self.map = stream(soup.find_all(class_='name-field')).filter(
                 lambda x: "Результат," in str(x) != None and "-я карта" in str(x) != None).map(
                 lambda x: int(re.search(r'[0-9]+', str(x)).group(0))).toList()[0]
         except:
@@ -26,9 +26,10 @@ class MarathonBetMatch(Match):
 
 
         # current map score
-        self.map_score = self.soup.find(class_='cl-left red').find(class_='italic').text
+        self.current_map_score = soup.find(class_='cl-left red').find(class_='italic').text
+        self.match_map_score = soup.find(class_='cl-left red').text.split(" ")[2]
 
-        results = self.soup.find_all(class_='result-right')
+        results = soup.find_all(class_='result-right')
         if(results!=None or results!=[]):
             lst_1 = stream(results).filter(lambda x: "Map_Result" in str(x) and "RN_H" in str(x)).map(lambda x: float(x.text)).toList()
             if(lst_1==None or lst_1==[]):
@@ -40,8 +41,8 @@ class MarathonBetMatch(Match):
 
             self.coef_1 = lst_1[0]
             self.coef_2 = lst_2[0]
-            self.logger.debug(self.showInfoWithCoeffs())
-            print("\n")
+            # self.logger.debug(self.showInfoWithCoeffs())
+            # print("\n")
             return True
         return False
 

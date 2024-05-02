@@ -19,7 +19,7 @@ class ConsoleViewer:
     def showResult(matchToPredict, isWin, additionalInfo):
 
         print("\n")
-        info = f'Карта завершёна\n {matchToPredict.showInfoWithCoeffs()}'
+        info = f'Карта завершёна\n{matchToPredict.showInfoWithCoeffs()}\n{additionalInfo}'
 
         if (isWin):
             matchToPredict.logger.info(f"{info}")

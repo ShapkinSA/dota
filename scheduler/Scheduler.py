@@ -19,7 +19,7 @@ class Scheduler:
     def startMonitoring(self):
         # Мониторинг игр
         self.scheduler = BackgroundScheduler()
-        self.scheduler.add_job(self.monitor.searchingTheGame, 'interval', id="monitor", seconds=self.monitor_refresh_time)
+        # self.scheduler.add_job(self.monitor.searchingTheGame, 'interval', id="monitor", seconds=self.monitor_refresh_time)
         # self.scheduler.add_job(self.monitor.checkBrowserState, 'interval', id="browser_scheduler", seconds=self.browser_refresh_time)
 
         # Запоминаем scheduler для вызова мониторинга

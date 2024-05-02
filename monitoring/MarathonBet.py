@@ -57,7 +57,9 @@ class MarathonBet:
         self.all_error_games = dict()
 
         # Открываем браузер
-        self.browser = Browser("https://www.marathonbet.ru/su/live/1372932")
+        # self.browser = Browser("https://www.marathonbet.ru/su/live/1372932")
+        self.searchingTheGame()
+        # self.soup = BeautifulSoup(self.browser.page_source, 'html.parser')
 
     def getGameNameStatusAndCoefs(self, match_text, header_text):
 
@@ -150,56 +152,57 @@ class MarathonBet:
     #         self.OnCreate()
 
     def searchingTheGame(self):
-        strHTML = self.browser.browser.page_source
-        startInd = strHTML.index("reactData")
-        endInd = 0
-        for i in range(startInd, 100000000):
-            if (strHTML[i] == '\n'):
-                endInd = i - 1
-                break
+        while(True):
 
-        site_live_json = json.loads(strHTML[startInd + 12:endInd])
-        # dotaMatches = stream(stream(site_live_json["liveMenuEvents"]["childs"]).filter(lambda x: x["label"] == "Киберспорт").toList()[0]["childs"]).filter(lambda x: "Dota 2" in x["label"]).toList()
-        dotaMatches = stream(
-            stream(site_live_json["liveMenuEvents"]["childs"]).filter(lambda x: x["label"] == "Киберспорт").toList()[0][
-                "childs"]).filter(lambda x: "Counter" in x["label"]).toList()
-        for matchJson in dotaMatches:
-            match = Reflection.get_class("model." + type(self).__name__ + "Match.py", matchJson["label"],
-                                         matchJson["childs"][0]["label"].split(" - ")[0],
-                                         matchJson["childs"][0]["label"].split(" - ")[1],
-                                         "https://www.marathonbet.ru" + matchJson["childs"][0]["url"], self.logger, self.strategy)
+            strHTML = requests.get("https://www.marathonbet.ru/su/live/1372932")
+            time.sleep(5)
 
-            if self.all_current_games.get(match.__str__()) is None:
-                self.all_current_games[match.__str__()] = match
-                match.startBrowser()
-            else:
-                match.soup = self.all_current_games[match.__str__()].soup
+            startInd = strHTML.text.index("reactData")
+            endInd = 0
+            for i in range(startInd, 100000000):
+                if (strHTML.text[i] == '\n'):
+                    endInd = i - 1
+                    break
 
-            # TODO add handler to add game (monitoring coefficients)
-            isAlive = match.parseDataFromSite()
+            site_live_json = json.loads(strHTML.text[startInd + 12:endInd])
+            # dotaMatches = stream(stream(site_live_json["liveMenuEvents"]["childs"]).filter(lambda x: x["label"] == "Киберспорт").toList()[0]["childs"]).filter(lambda x: "Dota 2" in x["label"]).toList()
+            dotaMatches = stream(stream(site_live_json["liveMenuEvents"]["childs"]).filter(lambda x: x["label"] == "Киберспорт").toList()[0]["childs"]).filter(lambda x: "Counter" in x["label"]).toList()
 
-            old_match_data = self.all_current_games[match.__str__()]
-            if (isAlive and match.map != old_match_data.map):
-                self.strategy.resultMap(match, old_match_data)
-                self.all_current_games[match.__str__()].closeBrowser()
-                self.all_current_games.pop(match.__str__())
-                continue
 
-            self.all_current_games[match.__str__()] = match
 
-            # TODO pass actual data to strategy (prediction)
 
-            # print(self.strategy.__str__())
+            for matchJson in dotaMatches:
+                match = Reflection.get_class("model." + type(self).__name__ + "Match.py", matchJson["label"],
+                                             matchJson["childs"][0]["label"].split(" - ")[0],
+                                             matchJson["childs"][0]["label"].split(" - ")[1],
+                                             "https://www.marathonbet.ru" + matchJson["childs"][0]["url"], self.logger, self.strategy)
 
-            # if(self.strategy!=None):
-            #     print(self.strategy.__str__())
+                # if self.all_current_games.get(match.__str__()) is None:
+                #     self.all_current_games[match.__str__()] = match
 
-            # try:
-            #     self.strategy.predictMap(match)
-            # except:
-            #     continue
+                strHTML = requests.get(match.uri)
+                soup = BeautifulSoup(strHTML.text, 'html.parser')
+                time.sleep(5)
 
-            self.strategy.predictMap(match)
+                # TODO add handler to add game (monitoring coefficients)
+                isAlive = match.parseDataFromSite(soup)
 
-            # if (isAcceptStrategy==False):
-            #     continue
+                sc_1 = int(match.current_map_score.split(":")[0])
+                sc_2 = int(match.current_map_score.split(":")[1])
+
+                if (isAlive and self.all_current_games.get(match.__str__()) and (sc_1 + sc_2) == 7):
+                    self.strategy.resultMap(match, self.all_current_games[match.__str__()])
+                    self.all_current_games.pop(match.__str__())
+                    continue
+
+                # if (isAlive and self.all_current_games.get(match.__str__()) and match.map != self.all_current_games[match.__str__()].map):
+                #     self.strategy.resultMap(match, self.all_current_games[match.__str__()])
+                #     self.all_current_games.pop(match.__str__())
+                #     continue
+
+                # if self.all_current_games.get(match.__str__()):
+                #     self.all_current_games[match.__str__()] = match
+
+                match = self.strategy.predictMap(match)
+                if (match!=None and self.all_current_games.get(match.__str__())==None):
+                    self.all_current_games[match.__str__()] = match

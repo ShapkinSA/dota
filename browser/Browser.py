@@ -2,6 +2,8 @@ import json
 import os
 import threading
 import time
+
+from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import threading
@@ -31,23 +33,24 @@ class Browser:
     def __init__(self, url):
         self.onCreate(url)
         self.loop = True
+        self.soup = BeautifulSoup(self.browser.page_source, 'html.parser')
 
 
     def onCreate(self, url):
         self.startBrowser()
         self.browser.get(url)
 
-        thread = Thread(target=self.runThread)
-        thread.start()
+        # thread = Thread(target=self.runThread)
+        # thread.start()
 
-        # last_height = self.browser.execute_script("return document.body.scrollHeight")
-        # while True:
-        #     self.browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        #     time.sleep(0.5)
-        #     new_height = self.browser.execute_script("return document.body.scrollHeight")
-        #     if new_height == last_height:
-        #         break
-        #     last_height = new_height
+        last_height = self.browser.execute_script("return document.body.scrollHeight")
+        while True:
+            self.browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            time.sleep(0.5)
+            new_height = self.browser.execute_script("return document.body.scrollHeight")
+            if new_height == last_height:
+                break
+            last_height = new_height
 
     def runThread(self):
         last_height = self.browser.execute_script("return document.body.scrollHeight")

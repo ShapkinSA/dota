@@ -36,9 +36,9 @@ class StrategyStatistic:
         self.balance -= bet
 
 
-    def onResult(self,matchToPredict, isWin):
+    def onResult(self, isWin, coeff, bet):
         #Убираем сумму денег из лайва
-        self.sumLive -= matchToPredict.bet
+        self.sumLive -= bet
 
         if(isWin):
             #Фиксируем победу
@@ -51,14 +51,14 @@ class StrategyStatistic:
             self.lose_streak_counter = 0
 
             #Прирост баланса
-            self.balance += matchToPredict.bet * matchToPredict.prediction_coef
+            self.balance += bet * coeff
 
             #Прибыль с каждой ставки
-            self.margin += matchToPredict.bet * (matchToPredict.prediction_coef-1)
+            self.margin += bet * (coeff-1)
 
             # Фиксация самой большой выиграной ставки
-            if (matchToPredict.bet > self.max_bet_win):
-                self.max_bet_win = matchToPredict.bet
+            if (bet > self.max_bet_win):
+                self.max_bet_win = bet
 
 
         else:
@@ -72,12 +72,12 @@ class StrategyStatistic:
             self.win_streak_counter = 0
 
             #Фиксируем прибыль на данной ставке
-            self.margin -= matchToPredict.bet
+            self.margin -= bet
 
 
             # Фиксация самой большой выиграной ставки
-            if (matchToPredict.bet > self.max_bet_lose):
-                self.max_bet_lose = matchToPredict.bet
+            if (bet > self.max_bet_lose):
+                self.max_bet_lose = bet
 
 
         #Проверка на достижение требуемого баланса

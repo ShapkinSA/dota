@@ -36,7 +36,14 @@ class ComebackOne(Strategy):
     def predictByStrategy(self, matchToPredict):
 
         # Только при равном счёте в текущей карте
-        if (matchToPredict.map_score != "0:0"):
+
+        sc_1 = int(matchToPredict.current_map_score.split(":")[0])
+        sc_2 = int(matchToPredict.current_map_score.split(":")[1])
+
+        # if (matchToPredict.match_map_score != "0:0"):
+        #     return matchToPredict, None
+
+        if ( (sc_1 + sc_2) > 20):
             return matchToPredict, None
 
         if (matchToPredict.coef_1 > self.minCoeff):
@@ -57,11 +64,11 @@ class ComebackOne(Strategy):
 
         return matchToPredict, None
 
-    def resultByStrategy(self, matchToPredict, isWin):
+    def resultByStrategy(self, matchToPredict, isWin, coef, bet):
         if (isWin):
-            return f"Сумма ставки {matchToPredict.bet}\nПрибыль с данной ставки {self.baseBets[matchToPredict.__str__()].bet * (matchToPredict.prediction_coef - 1)}"
+            return f"Сумма ставки {bet}\nПрибыль с данной ставки {bet * (coef - 1)}"
         else:
-            return f"Сумма ставки {matchToPredict.bet}\nОбщий дефицит {self.deficit}"
+            return f"Сумма проигранной ставки {bet}"
 
     # Обработка внезапного исчезновения игры
     # def isDisappearedGame(self,matchToPredict):

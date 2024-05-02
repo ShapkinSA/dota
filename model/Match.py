@@ -23,7 +23,8 @@ class Match:
         self.coef_2 = 0
         self.bet_1 = 0
         self.bet_2 = 0
-        self.map_score = "10:10"
+        self.current_map_score = "10:10"
+        self.match_map_score = "5:5"
         self.map = 0
 
 
@@ -38,9 +39,9 @@ class Match:
         return f'{self.info}\n{self.team_1} - {self.team_2}'
 
     def showInfoWithCoeffs(self):
-        return f'{self.info}\nКарта №{self.map}\nСчёт карты {self.map_score}\n{self.team_1} - {self.team_2}\nП1 {self.coef_1} : П2 {self.coef_2}\n{self.uri}'
+        return f'{self.info}Счёт по картам {self.match_map_score}\nКарта №{self.map}\nСчёт карты {self.current_map_score}\n{self.team_1} - {self.team_2}\nП1 {self.coef_1} : П2 {self.coef_2}\n{self.uri}'
 
-    def parseDataFromSite(self):
+    def parseDataFromSite(self, soup):
         return True
 
     # @staticmethod
